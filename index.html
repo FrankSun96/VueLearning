@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vue</title>
+    <link rel="stylesheet" href="css.css">
+
+</head>
+<body>
+    <div id="myApp">
+        <h3>游戏列表</h3>
+        <div v-if="seen">2017最新发卖</div>
+        <ol>
+            <li v-for="game in games">{{ game.title }} / {{ game.price}} </li>
+        </ol>
+    </div>
+    <div id="myGame">
+        <p>您喜欢的游戏是：{{ message }} </p>
+        <p><input v-model="message"></p>
+        <button v-on:click="btnClick('我的世界')">我的世界</button>
+        <button v-on:click="btnClick('勇者斗恶龙')">勇者斗恶龙</button>
+        <button v-on:click="btnClick('塞尔达传说')">塞尔达传说</button>
+        <button v-on:click="btnClick('摩羯战记')">摩羯战记</button>
+    </div>
+    <div id="myItem">
+        <ol>
+            <game-item v-for="item in games" v-bind:game="item"></game-item>
+        </ol>
+    </div>
+    <div id="myFilter">
+        <p>{{ message }}</p>
+        <p>{{ message | toupper }}</p>
+        <hr>
+        <p>x现在vue.js学习进度是{{num}}({{num | topercentage}})</p>
+    </div>
+    <div id="myComputed">
+        今年任天堂的价格是{{ price }}円，含税价格为{{ priceInTax }}円，折合人民币为{{ priceChinaRMB }}元
+    </div>
+    <div id="myWatch">
+        今年任天堂的价格是{{ price }}円，含税价格为{{ priceInTax }}円，折合人民币为{{ priceChinaRMB }}元
+        <button @click="btnClick(10000)">加价10000円</button>
+    </div>
+    <div id="mySetter">
+        今年任天堂的价格是{{ price }}円，含税价格为{{ priceInTax }}円，折合人民币为{{ priceChinaRMB }}元
+        <button @click="btnClick(10000)">把含税价格改为10800円</button>
+    </div>
+    <div id="myClass">
+        <div v-bind:class="{active:isActive}">红色文本1</div>
+        <div :class="myClass">红色文本2</div>
+        <button @click="btnClick">改变class</button>
+    </div>
+    <div id="myIf">
+        <h1 v-if="result == 0">考试成绩未公布</h1>
+        <h1 v-else-if="result < 60">{{ result }}分，考试不及格</h1>
+        <h1 v-else-if="result < 80">{{ result }}分， 还需努力</h1>
+        <h1 v-else>{{ result }}分，考得不错</h1>
+        <button @click="btnClick">考试成绩</button>
+    </div>
+    <div id="myShow">
+        <h1 v-show="result">任天堂新一代主机Switch</h1>
+        <button v-on:click="btnClick">显示</button>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        var myApp = new Vue({
+            el: '#myApp',
+            data: {
+                seen: true,
+                games: [
+                    {title: '勇者斗恶龙', price: 400},
+                    {title: '超级马里奥', price: 380},
+                    {title: '我的世界', price: 99}
+                ],
+            }
+        });
+        var myGame = new Vue({
+            el: '#myGame',
+            data: {
+                message: '超级马里奥'
+            },
+            methods: {
+                btnClick: function(pname) {
+                    this.message = pname;
+                }
+            }
+        });
+        Vue.component('game-item', {
+           props: ['game'],
+           template: '<li>{{ game.title }}</li>'
+        });
+        var myItem = new Vue({
+           el: '#myItem',
+           data: {
+               games: [
+                   {title: '斗地主'},
+                   {title: '打麻将'},
+                   {title: 'UNO'}
+               ]
+           }
+        });
+        var myFilter = new Vue({
+           el: '#myFilter',
+           data: {
+               message: 'hello vue.js world',
+               num: 0.3
+           },
+           filters: {
+             toupper: function(value){
+                 return value.toUpperCase();
+             },
+             topercentage: function(value){
+                return value * 100 + '%';
+             }
+           }
+        });
+        var myComputed = new Vue({
+            el: '#myComputed',
+            data: {
+                price: 29980,
+            },
+            computed: {
+                priceInTax: function(){
+                    return this.price * 1.08;
+                },
+                priceChinaRMB: function(){
+                    return Math.round(this.priceInTax / 16.75);
+                }
+            }
+        });
+        var myWatch = new Vue({
+            el: '#myWatch',
+            data: {
+                price: 0,
+                priceInTax: 0,
+                priceChinaRMB: 0
+            },
+            watch: {
+                price: function(newVal, oldVal){
+                    console.log(newVal, oldVal);
+                    this.priceInTax = Math.round(this.price * 1.08);
+                    this.priceChinaRMB = Math.round(this.priceInTax / 16.75)
+                }
+            },
+            methods: {
+                btnClick: function(newPrice) {
+                    this.price += newPrice;
+                }
+            }
+        });
+        myWatch.price = 29980;
+        var mySetter = new Vue({
+            el: '#mySetter',
+            data: {
+                price: 29980
+            },
+            computed: {
+                priceInTax: {
+                    get: function(){
+                        return this.price * 1.08;
+                    },
+                    set: function(value){
+                        this.price = value;
+                    }
+                },
+                priceChinaRMB: function(){
+                    return Math.round(this.priceInTax / 16.75);
+                }
+            },
+            methods: {
+                btnClick: function(newPrice){
+                    this.priceInTax = newPrice
+                }
+            }
+        });
+        var myClass = new Vue({
+            el: '#myClass',
+            data: {
+                isActive: true,
+                myClass: {
+                    active: true,
+                    big: true
+                }
+            },
+            methods: {
+                btnClick: function(){
+                    this.isActive = !this.isActive;
+                    this.myClass.big = false;
+                }
+            }
+        });
+        var myIf = new Vue({
+            el: '#myIf',
+            data: {
+                result: 0
+            },
+            methods: {
+                btnClick () {
+                    this.result = Math.round(Math.random() * 100);
+                }
+            }
+        });
+        var myShow = new Vue({
+            el: '#myShow',
+            data: {
+                result: true
+            },
+            methods: {
+                btnClick () {
+                    this.result = !this.result;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
