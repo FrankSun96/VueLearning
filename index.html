@@ -55,10 +55,140 @@
         <h1 v-else-if="result < 80">{{ result }}分， 还需努力</h1>
         <h1 v-else>{{ result }}分，考得不错</h1>
         <button @click="btnClick">考试成绩</button>
-    </div>
+    </div>git
     <div id="myShow">
         <h1 v-show="result">任天堂新一代主机Switch</h1>
         <button v-on:click="btnClick">显示</button>
+    </div>
+    <div id="myFor">
+        <ul>
+            <li v-for="(game, index) in games">{{index + 1}} {{game.title}} / 售价： {{game.price}} 元</li>
+        </ul>
+        <h1>JS对象迭代</h1>
+        <div v-for="(value, key) in mygame">
+            {{ key }} : {{ value }}
+        </div>
+    </div>
+    <div id="myOn">
+        <h1>事件处理器</h1>
+        <input id="txtName" v-on:keyup="txtKeyup($event)">
+        <button id="btnOk" @click="btnClick($event)">OK</button>
+    </div>
+    <div id="myModel">
+        <h1>表单控件绑定</h1>
+        <input type="text" v-model="message" placeholder="来啊！编辑我吧">
+        <p>Message is: {{ message }}</p>
+        <h1>表单复选框</h1>
+        <input type="checkbox" id="生化危机7" value="生化危机7" v-model="checkedGames">
+        <label for="生化危机7">生化危机7</label>
+        <input type="checkbox" id="模拟飞行" value="模拟飞行" v-model="checkedGames">
+        <label for="模拟飞行">模拟飞行</label>
+        <input type="checkbox" id="塞尔达传说" value="塞尔达传说" v-model="checkedGames">
+        <label for="塞尔达传说">塞尔达传说</label>
+        <p>您选择的游戏是: {{ checkedGames }}</p>
+        <h1>表单单选按钮</h1>
+        <h3>选择性别</h3>
+        <input type="radio" id="male" value="男" v-model="pickedSex">
+        <label for="male">男</label>
+        <br>
+        <input type="radio" id="female" value="女" v-model="pickedSex">
+        <label for="female">女</label>
+
+        <h3>选择爱好</h3>
+        <input type="radio" id="game" value="玩游戏" v-model="pickedHobby">
+        <label for="game">玩游戏</label>
+        <br>
+        <input type="radio" id="movie" value="看电影" v-model="pickedHobby">
+        <label for="movie">看电影</label>
+        <h3>选择结果</h3>
+        <p>性别: {{ pickedSex }}</p>
+        <p>爱好: {{ pickedHobby }}</p>
+        <h1>下拉框</h1>
+        <h3>您最喜欢的球星是：</h3>
+        <select multiple v-model="likedNBAStar">
+            <option>科比</option>
+            <option>詹姆斯</option>
+        </select>
+        <p>您最喜欢的球星是 {{likedNBAStar}}</p>
+        <h1>表单修饰符</h1>
+        <h3>用户注册</h3>
+        <div>
+            <label for="username">用户:</label>
+            <input type="text" id="username" v-model.lazy="username" @change="checkUsername">
+            <span v-if="checkUsernameOK">可注册</span>
+        </div>
+        <div>
+            <label for="age">年龄：</label>
+            <input type="number" id="age" v-model.number="age">
+        </div>
+        <div>
+            <label for="content">个人简介：</label>
+            <br>
+            <textarea id="content" cols="30" rows="10" v-model.trim="content"></textarea>
+        </div>
+        <h4>信息区</h4>
+        <p>{{ username }}</p>
+        <p>{{ age }}</p>
+        <p>{{ content }}</p>
+        <!-- 用户输入时不做绑定数据的更新处理，在控件的onchange事件中更新绑定的变量
+        <span>用户名: <input v-model.lazy="username"></span>
+        <br>
+        将用户输入的内容转换为数值模型，如果用户输入非数值的时候，返回NaN
+        <span>年龄： <input v-model.number="age" type="number"></span>
+        <br>
+        <span>意见: <input v-model.trim="content"></span>
+        <br>-->
+    </div>
+    <h1>组件</h1>
+    <div id="myCom">
+        <today-weather></today-weather>
+        <my-weather></my-weather>
+        <h3>表行组件</h3>
+        <h1>2017最期待的游戏</h1>
+        <table border="1">
+            <tr>
+                <td>编号</td>
+                <td>游戏名称</td>
+            </tr>
+            <tr is="my-row1"></tr>
+            <tr is="my-row2"></tr>
+            <tr is="my-row3"></tr>
+        <!--
+            <my-row1></my-row1>
+            <my-row2></my-row2>
+            <my-row3></my-row3>
+        -->
+        </table>
+        <h1>组件数据</h1>
+        <div>今天的天气是<now-weather/></div>
+        <h1>为组件传递数据</h1>
+        <h2>您的成绩评价</h2>
+        <test-result v-bind:score="50"></test-result>
+        <test-result :score="65"></test-result>
+        <test-result :score="90"></test-result>
+        <test-result :score="100"></test-result>
+        <h1>传递变量</h1>
+        <div>请输入您的名字: <input v-model="myname"></div>
+        <hr>
+        <say-hellp :pname="myname"></say-hellp>
+        <br>
+        <h1>参数验证</h1>
+        <h2>身世之谜</h2>
+        <show-member-info name="frank" :age="25" :detail="{address: 'earth', language: 'chinese'}"></show-member-info>
+        <h1>事件传递 子组件给父组件传递参数</h1>
+        <h2>人生加法</h2>
+        <add-method :a="6" :b="12" @add_event="getAddResult"></add-method>
+        <h3>{{ result }}</h3>
+        <h1>slot</h1>
+        <say-to pname="frank">
+            你的视频做的太差了
+        </say-to>
+        <h1>组合slot</h1>
+        <nba-all-stars c="奥尼尔" pf="加内特">
+            <span slot="sf">皮尔斯</span>
+            <span slot="sg">雷阿伦</span>
+            <span slot="pg">隆多</span>
+        </nba-all-stars>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="script.js"></script>
